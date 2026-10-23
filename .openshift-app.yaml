@@ -1,0 +1,5 @@
+name: o-i-creation
+description: Offer / invoice creation helper
+sourceType: kustomize
+path: deploy/openshift
+defaultRef: main

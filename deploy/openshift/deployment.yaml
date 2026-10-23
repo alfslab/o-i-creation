@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oi-creation
+  labels:
+    app: oi-creation
+    app.kubernetes.io/managed-by: alfslab-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oi-creation
+  template:
+    metadata:
+      labels:
+        app: oi-creation
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: app
+          image: quay.io/abach/oi-creation:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet: { path: /, port: http }
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          resources:
+            requests: { cpu: 25m, memory: 64Mi }
+            limits: { memory: 512Mi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: ["ALL"] }
+            runAsNonRoot: true
+            seccompProfile: { type: RuntimeDefault }
